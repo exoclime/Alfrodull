@@ -719,8 +719,9 @@ __global__ void compute_column_Qheat(double* F_net_cols, // net flux, layer
 
 bool two_streams_radiative_transfer::phy_loop(ESP&                   esp,
                                               const SimulationSetup& sim,
-                                              int                    nstep, // Step number
-                                              double                 time_step)             // Time-step [s]
+                                              //  kernel_diagnostics&    diag,
+                                              int    nstep,     // Step number
+                                              double time_step) // Time-step [s]
 {
     bool run      = true;
     qheat_scaling = 1.0;
