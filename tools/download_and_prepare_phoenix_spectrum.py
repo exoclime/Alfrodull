@@ -110,3 +110,15 @@ with h5py.File(resampled_stellar_spectrum_path, "w") as f:
     flux_dset = f.create_dataset("flux", rebinned_spectrum.shape, dtype=np.float64)
     lambda_dset[...] = opac_wavelengths_centers
     flux_dset[...] = rebinned_spectrum
+
+    Tstar_dset = f.create_dataset("T_star", (1,), dtype=np.float64)
+    Tstar_dset[...] = Teff
+    
+    logg_dset = f.create_dataset("logg", (1,), dtype=np.float64)
+    logg_dset[...] = logg
+
+    FeH_dset = f.create_dataset("FeH", (1,), dtype=np.float64)
+    FeH_dset[...] = FeH
+
+    alphaM_dset = f.create_dataset("alphaM", (1,), dtype=np.float64)
+    alphaM_dset[...] = alphaM

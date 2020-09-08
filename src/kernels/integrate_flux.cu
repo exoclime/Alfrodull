@@ -645,7 +645,7 @@ __global__ void fband_noniso_notabu(double* F_down_wg_,
 
     int nlayer = numinterfaces - 1;
 
-    if (x < nbin && y < ny * c < num_cols) {
+    if (x < nbin && y < ny && c < num_cols) {
         double* F_down_wg          = &(F_down_wg_[c * numinterfaces * nbin * ny]);
         double* F_up_wg            = &(F_up_wg_[c * numinterfaces * nbin * ny]);
         double* Fc_down_wg         = &(Fc_down_wg_[c * numinterfaces * nbin * ny]);

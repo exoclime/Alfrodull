@@ -119,7 +119,7 @@ public:
 
 
     //    double a; // ?
-    bool thomas = false;
+    bool thomas = true;
     // two debugging variables
     // run in single walk mode
     bool scat_single_walk = true;
