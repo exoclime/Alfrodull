@@ -1012,8 +1012,8 @@ bool alfrodull_engine::prepare_compute_flux(
                                                    *planckband_lay,          // out
                                                    *plancktable.planck_grid, // in
                                                    dev_starflux,             // in
-                                                   real_star,
                                                    null_planck_function,
+                                                   real_star,
                                                    nlayer,
                                                    nbin,
                                                    plancktable_dim,
