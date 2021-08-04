@@ -724,7 +724,7 @@ void alfrodull_engine::compute_radiative_transfer(
 
         cuda_check_status_or_exit(__FILE__, __LINE__);
 
-        
+
         BENCH_POINT_I_S(debug_nstep,
                         debug_col_idx,
                         "Alf_prep_flx",
@@ -776,8 +776,7 @@ void alfrodull_engine::compute_radiative_transfer(
                              "G_minus",
                              "opac_wg_lay",
                              "meanmolmass_lay",
-                             "scat_cs_lay",
-                             ));
+                             "scat_cs_lay", ));
         }
         else {
             BENCH_POINT_I_S(debug_nstep,
@@ -788,8 +787,7 @@ void alfrodull_engine::compute_radiative_transfer(
                              "delta_col_lower",
                              "meanmolmass_int",
                              "scat_cs_int",
-                             "opac_wg_int"
-                             ));
+                             "opac_wg_int"));
             calculate_transmission_noniso(*trans_wg_upper,
                                           *trans_wg_lower,
                                           *delta_col_upper,

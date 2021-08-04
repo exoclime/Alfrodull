@@ -53,7 +53,7 @@ cloud_opacity_table::cloud_opacity_table() {
 
 bool cloud_opacity_table::load(const string& filename) {
 
-  log::printf("Loading cloud opacity tables from %s\n", filename.c_str());
+    log::printf("Loading cloud opacity tables from %s\n", filename.c_str());
     storage s(filename, true);
 
     int num_asym = read_table_to_device<double>(s, "/asymmetry", dev_asymmetry);
@@ -61,6 +61,8 @@ bool cloud_opacity_table::load(const string& filename) {
     int num_scat = read_table_to_device<double>(s, "/scattering", dev_scat_cross_sections);
 
     int num_abs = read_table_to_device<double>(s, "/absorption", dev_abs_cross_sections);
+
+    int num_wave = read_table_to_device<double>(s, "/wavelength", dev_wavelength);
 
     log::printf("Loaded %d asym, %d scat and %d abs values.\n", num_asym, num_scat, num_abs);
 
