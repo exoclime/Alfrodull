@@ -700,9 +700,11 @@ void alfrodull_engine::compute_radiative_transfer(
     double*     F_up_TOA_spectrum_cols,
     double*     zenith_angle_cols,
     double*     surface_albedo,
+    double*     contr_func_band,
     int         num_cols,
     int         column_idx,
-    bool        surface) // number of columns this function works on
+    bool        surface,
+    bool        store_contr_func) // number of columns this function works on
 {
     USE_BENCHMARK();
     {
@@ -983,6 +985,9 @@ void alfrodull_engine::compute_radiative_transfer(
     BENCH_POINT_I_S(
         debug_nstep, debug_col_idx, "Alf_int_flx", (), ("F_up_band", "F_down_band", "F_dir_band"));
 
+    if (store_contr_func)
+        calculate_contribution_function(
+            contr_func_band, *trans_wg, gauss_weight, *planckband_lay, num_cols);
 
     cuda_check_status_or_exit(__FILE__, __LINE__);
 
@@ -1832,4 +1837,40 @@ bool alfrodull_engine::get_column_integrated_g0_w0(double* g0_, double* w0_, con
     //     cudaDeviceSynchronize();
     // }
     return true;
+}
+
+/* Calculate contribution function */
+void alfrodull_engine::calculate_contribution_function(double* contr_func_band,
+                                                       double* trans_wg,
+                                                       double* gauss_weight,
+                                                       double* planckband_lay,
+                                                       int     num_cols) {
+
+    int nbin = opacities.nbin;
+    int ny   = opacities.ny;
+
+    {
+        int  num_levels_per_block = 16;
+        int  num_bins_per_block   = 16;
+        dim3 gridsize(nlayer / num_levels_per_block + 1, nbin / num_bins_per_block + 1, num_cols);
+        dim3 blocksize(num_levels_per_block, num_bins_per_block, 1);
+
+        if (iso) {
+            calc_contr_func_iso<<<gridsize, blocksize>>>(contr_func_band,
+                                                         trans_wg,
+                                                         gauss_weight,
+                                                         planckband_lay,
+                                                         epsi,
+                                                         nbin,
+                                                         ny,
+                                                         nlayer,
+                                                         num_cols);
+        }
+        else {
+            calc_contr_func_noniso<<<gridsize, blocksize>>>(
+                contr_func_band, nbin, ny, nlayer, num_cols);
+        }
+
+        cudaDeviceSynchronize();
+    }
 }

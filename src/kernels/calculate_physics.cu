@@ -779,3 +779,59 @@ __global__ void trans_noniso(double*       trans_wg_upper,
         }
     }
 }
+
+
+__global__ void calc_contr_func_iso(double* contr_func_band,
+                                    double* trans_wg,
+                                    double* gauss_weight,
+                                    double* planckband_lay,
+                                    double  epsi,
+                                    int     nbin,
+                                    int     ny,
+                                    int     nlayer,
+                                    int     num_cols) {
+
+    int layer_idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int bin_idx   = blockIdx.y * blockDim.y + threadIdx.y;
+    int c         = blockIdx.z;
+
+    if (bin_idx < nbin && layer_idx < nlayer) {
+        int bin_offset = bin_idx + nbin * layer_idx + c * nbin * nlayer;
+
+        double trans_to_top, trans_weight_band = 0.0;
+
+        for (int y = 0; y < ny; y++) { //loop over gauss points
+            trans_to_top = 1.0;
+
+            for (int j = layer_idx + 1; j < nlayer; j++) { //production term
+                trans_to_top =
+                    trans_to_top
+                    * trans_wg[y + ny * bin_idx + ny * nbin * j + c * nlayer * ny * nbin];
+            }
+
+            trans_weight_band +=
+                0.5 * gauss_weight[y]
+                * (1.0
+                   - trans_wg[y + ny * bin_idx + ny * nbin * layer_idx + c * nlayer * ny * nbin])
+                * trans_to_top;
+        }
+
+        contr_func_band[bin_offset] =
+            2.0 * PI * epsi
+            * planckband_lay[layer_idx + bin_idx * (nlayer + 2) + c * nbin * (nlayer + 2)]
+            * trans_weight_band;
+    }
+}
+
+__global__ void
+calc_contr_func_noniso(double* contr_func_band, int nbin, int ny, int nlayer, int num_cols) {
+    int layer_idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int bin_idx   = blockIdx.y * blockDim.y + threadIdx.y;
+    int c         = blockIdx.z;
+
+    if (bin_idx < nbin && layer_idx < nlayer) {
+        int bin_offset = bin_idx + nbin * layer_idx + c * nbin * nlayer;
+
+        contr_func_band[bin_offset] = -69.69;
+    }
+}

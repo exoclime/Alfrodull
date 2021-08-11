@@ -136,6 +136,9 @@ void two_streams_radiative_transfer::print_config() {
     log::printf("    Store dir flux spectrum (per band):      %s\n",
                 store_dir_spectrum ? "true" : "false");
 
+    log::printf("    Store contribution function (per band):  %s\n",
+                store_contr_func ? "true" : "false");
+
     log::printf("    Null Planck Function:                    %s\n",
                 null_planck_function ? "true" : "false");
 
@@ -228,7 +231,7 @@ bool two_streams_radiative_transfer::configure(config_file &config_reader) {
         "Alf_store_dir_spectrum", store_dir_spectrum, store_dir_spectrum);
     config_reader.append_config_var(
         "Alf_null_planck_function", null_planck_function, null_planck_function);
-
+    config_reader.append_config_var("Alf_store_contr_func", store_contr_func, store_contr_func);
 
     config_reader.append_config_var("Alf_debug", debug_output, debug_output);
 
@@ -479,10 +482,19 @@ bool two_streams_radiative_transfer::initialise_memory(
     F_dir_tot.allocate(esp.point_num * ninterface);
     F_down_band.allocate(ncol * ninterface_nbin);
     F_up_band.allocate(ncol * ninterface_nbin);
-    if (store_dir_spectrum)
+    if (store_dir_spectrum) {
         F_dir_band.allocate(esp.point_num * ninterface_nbin);
-    else
+    }
+    else {
         F_dir_band.allocate(ncol * ninterface_nbin);
+    }
+    if (store_contr_func) {
+        contr_func_band.allocate(esp.point_num * nlayer_nbin);
+    }
+    else {
+        contr_func_band.allocate(1); //don't need this thing, just make it small
+    }
+
     F_net.allocate(esp.point_num * ninterface);
 
     F_up_TOA_spectrum.allocate(esp.point_num * nbin);
@@ -1294,11 +1306,21 @@ bool two_streams_radiative_transfer::phy_loop(ESP &                  esp,
                     double *F_col_dir_tot  = &((*F_dir_tot)[column_offset_int]);
                     double *F_col_net      = &((*F_net)[column_offset_int]);
 
-                    double *F_col_dir_band = nullptr;
-                    if (store_dir_spectrum)
+                    double *F_col_dir_band      = nullptr;
+                    double *contr_func_col_band = nullptr;
+                    if (store_dir_spectrum) {
                         F_col_dir_band = &((*F_dir_band)[column_idx * ninterface * nbin]);
-                    else
+                    }
+                    else {
                         F_col_dir_band = *F_dir_band;
+                    }
+                    if (store_contr_func) {
+                        contr_func_col_band = &((*contr_func_band)[column_idx * nlayer * nbin]);
+                    }
+                    else {
+                        contr_func_col_band = *contr_func_band;
+                    }
+
                     double *F_up_TOA_spectrum_col = &((*F_up_TOA_spectrum)[column_idx * nbin]);
 
                     alf.compute_radiative_transfer(dev_starflux,          // dev_starflux
@@ -1327,9 +1349,11 @@ bool two_streams_radiative_transfer::phy_loop(ESP &                  esp,
                                                    F_up_TOA_spectrum_col,
                                                    cos_zenith_angle_cols,
                                                    *surface_albedo,
+                                                   contr_func_col_band,
                                                    current_num_cols,
                                                    column_idx,
-                                                   esp.surface);
+                                                   esp.surface,
+                                                   store_contr_func);
                     cudaDeviceSynchronize();
                     cuda_check_status_or_exit(__FILE__, __LINE__);
                 }
@@ -1491,6 +1515,10 @@ bool two_streams_radiative_transfer::store_init(storage &s) {
                    "/Alf_null_planck_function",
                    "-",
                    "Alf set Planck function to 0");
+    s.append_value(store_contr_func ? 1 : 0,
+                   "/Alf_store_contr_function",
+                   "-",
+                   "Alf store contribution function per band");
     // {
     //     std::string str[] = {cloud_filename};
     //     s.append_value(str, "/Alf_cloudfile", "-", "Alf cloud opacity file");
@@ -1545,6 +1573,15 @@ bool two_streams_radiative_transfer::store(const ESP &esp, storage &s) {
                        "/F_dir_band",
                        "W m^-2 m^-1",
                        "Directional beam spectrum");
+    }
+
+    if (store_contr_func) {
+        std::shared_ptr<double[]> contr_func_band_h = contr_func_band.get_host_data();
+        s.append_table(contr_func_band_h.get(),
+                       contr_func_band.get_size(),
+                       "/contr_func_band",
+                       "W m^-2 m^-1",
+                       "Contribution function");
     }
 
     if (store_w0_g0) {

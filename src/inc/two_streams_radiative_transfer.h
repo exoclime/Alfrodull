@@ -111,8 +111,10 @@ public:
     bool   scat;
     bool   scat_corr;
 
-    bool store_w0_g0          = false;
-    bool store_dir_spectrum   = false;
+    bool store_w0_g0        = false;
+    bool store_dir_spectrum = false;
+    bool store_contr_func   = false;
+
     bool null_planck_function = false;
     // config
     double R_star_config;           // [R_sun]
@@ -215,6 +217,8 @@ private:
     cuda_device_memory<double> cloud_abs_cross_int;
     cuda_device_memory<double> cloud_scat_cross_lay;
     cuda_device_memory<double> cloud_scat_cross_int;
+
+    cuda_device_memory<double> contr_func_band;
 
     // surface albedo
     cuda_device_memory<double> surface_albedo;
