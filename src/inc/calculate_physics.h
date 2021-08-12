@@ -145,5 +145,13 @@ __global__ void calc_contr_func_iso(double* contr_func_band,
                                     int     nlayer,
                                     int     num_cols);
 
-__global__ void
-calc_contr_func_noniso(double* contr_func_band, int nbin, int ny, int nlayer, int num_cols);
+__global__ void calc_contr_func_noniso(double* contr_func_band,
+                                       double* trans_wg_upper,
+                                       double* trans_wg_lower,
+                                       double* gauss_weight,
+                                       double* planckband_lay,
+                                       double  epsi,
+                                       int     nbin,
+                                       int     ny,
+                                       int     nlayer,
+                                       int     num_cols);

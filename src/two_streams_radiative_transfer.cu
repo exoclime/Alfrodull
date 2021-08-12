@@ -1323,6 +1323,11 @@ bool two_streams_radiative_transfer::phy_loop(ESP &                  esp,
 
                     double *F_up_TOA_spectrum_col = &((*F_up_TOA_spectrum)[column_idx * nbin]);
 
+                    bool store_contr_func_nout = false;
+                    if (store_contr_func && nstep % sim.n_out == 0) {
+                        store_contr_func_nout = true;
+                    }
+
                     alf.compute_radiative_transfer(dev_starflux,          // dev_starflux
                                                    *temperature_lay,      // dev_T_lay
                                                    *temperature_int,      // dev_T_int
@@ -1353,7 +1358,7 @@ bool two_streams_radiative_transfer::phy_loop(ESP &                  esp,
                                                    current_num_cols,
                                                    column_idx,
                                                    esp.surface,
-                                                   store_contr_func);
+                                                   store_contr_func_nout);
                     cudaDeviceSynchronize();
                     cuda_check_status_or_exit(__FILE__, __LINE__);
                 }

@@ -454,9 +454,16 @@ public:
                                               int     num_cols);
 
 
-    void calculate_contribution_function(double* contr_func_band,
-                                         double* trans_wg,
-                                         double* gauss_weight,
-                                         double* planckband_lay,
-                                         int     num_cols);
+    void calculate_contribution_function_iso(double* contr_func_band,
+                                             double* trans_wg,
+                                             double* gauss_weight,
+                                             double* planckband_lay,
+                                             int     num_cols);
+
+    void calculate_contribution_function_noniso(double* contr_func_band,
+                                                double* trans_wg_upper,
+                                                double* trans_wg_lower,
+                                                double* gauss_weight,
+                                                double* planckband_lay,
+                                                int     num_cols);
 };
