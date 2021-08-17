@@ -513,6 +513,9 @@ bool two_streams_radiative_transfer::initialise_memory(
         int  abs_cs_size        = alf.cloud_opacities.dev_abs_cross_sections.get_size();
         bool cloud_load_failure = false;
 
+        std::shared_ptr<double[]> cloud_wavelength_h =
+            alf.cloud_opacities.dev_wavelength.get_host_data();
+
         if (asymmetry_size != nbin) {
             log::printf("Wrong size for cloud assymetry array size\n");
             log::printf("size: %d, nbin: %d\n", asymmetry_size, nbin);
@@ -529,6 +532,31 @@ bool two_streams_radiative_transfer::initialise_memory(
             log::printf("Wrong size for cloud absorption cross section array size\n");
             log::printf("size: %d, nbin: %d\n", abs_cs_size, nbin);
             cloud_load_failure = true;
+        }
+
+        double lambda_spectrum_scale = 1.0;
+
+        bool   lambda_check = true;
+        double epsilon      = 1e-4;
+        for (int i = 0; i < nbin; i++) {
+            bool check = fabs(cloud_wavelength_h[i] * lambda_spectrum_scale
+                              - alf.opacities.data_opac_wave[i])
+                             / alf.opacities.data_opac_wave[i]
+                         < epsilon;
+
+            if (!check)
+                printf("Missmatch in wavelength at idx [%d] l_cloud(%g) != "
+                       "l_opac(%g) \n",
+                       i,
+                       cloud_wavelength_h[i] * lambda_spectrum_scale,
+                       alf.opacities.data_opac_wave[i]);
+            lambda_check &= check;
+        }
+
+        if (!lambda_check) {
+            log::printf("wavelength points mismatch between cloud spectrum and "
+                        "opacities\n");
+            exit(EXIT_FAILURE);
         }
 
         if (cloud_load_failure) {

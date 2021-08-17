@@ -65,4 +65,7 @@ public:
 
     // asymmetry
     cuda_device_memory<double> dev_asymmetry;
+
+    // wavelength grid
+    cuda_device_memory<double> dev_wavelength;
 };
