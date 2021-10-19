@@ -295,6 +295,12 @@ bool two_streams_radiative_transfer::initialise_memory(
     // set opacity offset for test
     alf.set_experimental_opacity_offset(experimental_opacities_offset);
 
+
+    if (!path_exists(opacities_file)) {
+        log::printf("Opacity file not found: %s\n", opacities_file.c_str());
+        exit(EXIT_FAILURE);
+    }
+
     alf.load_opacities(opacities_file, opacity_file_is_CGS);
 
     cudaDeviceSynchronize();
@@ -304,7 +310,7 @@ bool two_streams_radiative_transfer::initialise_memory(
 
     alf.allocate_internal_variables();
     cuda_check_status_or_exit(__FILE__, __LINE__);
-
+    
     int ninterface         = nlayer + 1;
     int nlayer_plus1       = nlayer + 1;
     int nbin               = alf.opacities.nbin;
@@ -317,12 +323,14 @@ bool two_streams_radiative_transfer::initialise_memory(
     if (real_star) {
         // load star flux.
         std::printf("Using Stellar Flux file %s\n", stellar_spectrum_file.c_str());
-        star_flux.allocate(nbin);
+
         if (!path_exists(stellar_spectrum_file)) {
             log::printf("Stellar spectrum file not found: %s\n", stellar_spectrum_file.c_str());
             exit(EXIT_FAILURE);
         }
-
+        
+        star_flux.allocate(nbin);
+        
         double lambda_spectrum_scale = 1.0;
         double flux_scale            = 1.0;
 
@@ -516,7 +524,11 @@ bool two_streams_radiative_transfer::initialise_memory(
 
     if (clouds) {
         // load cloud file
-
+        if (!path_exists(cloud_filename)) {
+            log::printf("Cloud file not found: %s\n", cloud_filename.c_str());
+            exit(EXIT_FAILURE);
+        }
+      
 
         alf.cloud_opacities.load(cloud_filename);
 
