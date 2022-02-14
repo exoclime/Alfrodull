@@ -986,7 +986,6 @@ void alfrodull_engine::compute_radiative_transfer(
         debug_nstep, debug_col_idx, "Alf_int_flx", (), ("F_up_band", "F_down_band", "F_dir_band"));
 
     if (store_contr_func) {
-        printf("Running contr func calculatio 0_0 !!!");
         if (iso)
             calculate_contribution_function_iso(
                 contr_func_band, *trans_wg, gauss_weight, *planckband_lay, num_cols);

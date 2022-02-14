@@ -310,7 +310,7 @@ bool two_streams_radiative_transfer::initialise_memory(
 
     alf.allocate_internal_variables();
     cuda_check_status_or_exit(__FILE__, __LINE__);
-    
+
     int ninterface         = nlayer + 1;
     int nlayer_plus1       = nlayer + 1;
     int nbin               = alf.opacities.nbin;
@@ -328,9 +328,9 @@ bool two_streams_radiative_transfer::initialise_memory(
             log::printf("Stellar spectrum file not found: %s\n", stellar_spectrum_file.c_str());
             exit(EXIT_FAILURE);
         }
-        
+
         star_flux.allocate(nbin);
-        
+
         double lambda_spectrum_scale = 1.0;
         double flux_scale            = 1.0;
 
@@ -528,7 +528,7 @@ bool two_streams_radiative_transfer::initialise_memory(
             log::printf("Cloud file not found: %s\n", cloud_filename.c_str());
             exit(EXIT_FAILURE);
         }
-      
+
 
         alf.cloud_opacities.load(cloud_filename);
 
@@ -1613,7 +1613,7 @@ bool two_streams_radiative_transfer::store(const ESP &esp, storage &s) {
         s.append_table(g0_tot_h.get(), g0_tot.get_size(), "/g0_band", " ", "asymmetry per band");
     }
 
-    {
+    { // hmm... does this only make sense in the case that direct beam is off??
         int                       nbin             = alf.opacities.nbin;
         int                       numinterfaces    = esp.nvi;
         std::shared_ptr<double[]> planckband_lay_h = alf.planckband_lay.get_host_data();
