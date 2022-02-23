@@ -24,8 +24,8 @@ units of final opacity table =                CGS                               
 
 species    absorbing  scattering  mixing_ratio  FastChem_symbol  mass_in_AMU      data_path
 
-H2O        yes        yes         FastChem            H2O1             18.0153          ../Opacity3/1H2-16O__POKAZATEL_e2b/
+H2O        yes        yes         0.01            H2O1             18.0153          /mnt/disk2/Research/HELIOS.matej/Opacity3/1H2-16O__POKAZATEL_e2b/
 
-CO2        yes        yes         FastChem	        C1O2             44.01            ../Opacity3/12C-16O2__HITEMP2010_e2b/
+CO2        yes        yes         0.01        C1O2             44.01          /mnt/disk2/Research/HELIOS.matej/Opacity3/12C-16O2__HITEMP2010_e2b/
 
-N2         no         yes         FastChem          N2               28.0134          **
+N2         no         yes         0.98          N2               28.0134          **
