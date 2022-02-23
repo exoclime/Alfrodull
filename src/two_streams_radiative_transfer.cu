@@ -142,7 +142,7 @@ void two_streams_radiative_transfer::print_config() {
     log::printf("    Direct Beam:                             %s\n", dir_beam ? "true" : "false");
     // log::printf("    Geometrical Zenith Correction:           %s\n",
     //             geom_zenith_corr ? "true" : "false");
-    log::printf("    Direct Beam Tangent Angle Limit:         %g°\n", mu_star_limit_degrees);
+    log::printf("    Direct Beam Tangent Angle Limit:         %g degrees.\n", mu_star_limit_degrees);
 
     log::printf("    w0 limit:                                %g\n", w_0_limit);
     log::printf("    i2s transition:                          %g\n", i2s_transition);
@@ -307,7 +307,7 @@ bool two_streams_radiative_transfer::initialise_memory(
 
     alf.allocate_internal_variables();
     cuda_check_status_or_exit(__FILE__, __LINE__);
-    
+
     int ninterface         = nlayer + 1;
     int nlayer_plus1       = nlayer + 1;
     int nbin               = alf.opacities.nbin;
@@ -325,9 +325,9 @@ bool two_streams_radiative_transfer::initialise_memory(
             log::printf("Stellar spectrum file not found: %s\n", stellar_spectrum_file.c_str());
             exit(EXIT_FAILURE);
         }
-        
+
         star_flux.allocate(nbin);
-        
+
         double lambda_spectrum_scale = 1.0;
         double flux_scale            = 1.0;
 
@@ -516,7 +516,7 @@ bool two_streams_radiative_transfer::initialise_memory(
             log::printf("Cloud file not found: %s\n", cloud_filename.c_str());
             exit(EXIT_FAILURE);
         }
-      
+
 
         alf.cloud_opacities.load(cloud_filename);
 
