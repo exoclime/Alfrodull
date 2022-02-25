@@ -236,6 +236,7 @@ void wrap_compute_radiative_transfer(
     long F_up_TOA_spectrum,
     long zenith_angle,
     long surface_albedo,
+    long contr_func_band,
     bool surface) {
     if (Alf_ptr != nullptr) {
         int num_col = 1;
@@ -272,9 +273,11 @@ void wrap_compute_radiative_transfer(
             (double*)F_up_TOA_spectrum,
             (double*)zenith_angle,
             (double*)surface_albedo,
+            (double*)contr_func_band,
             num_col,
             1, // dummy
-            surface);
+            surface,
+            false);
     }
     else
         printf("ERROR: compute_radiative_transfer : no Alf_ptr\n");

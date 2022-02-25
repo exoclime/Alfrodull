@@ -1,0 +1,31 @@
+##############################################
+# Parameters for the K-table generator #
+##############################################
+
+### OPACITY FORMAT ###                                                                        ### INFO ###
+
+format =                                      ktable                                          (ktable, sampling)                                 (yes, no)
+
+# for sampling output ----------------------------------------------------------
+sampling wavelength grid =                    100  0.2  201                               (resolution, limits in micron [lower, upper])
+
+# for k-table output -----------------------------------------------------------
+ktable wavelength grid =                      30  0.3  200                          (number of bins, limits in micron [lower, upper])
+grid spacing =                                loglambda                             (wavenumber or loglambda)
+cadence for sampling =                        1                                     (how finely to sample opacities during k-table construction, 1 = native helios-k resolution, 10 = every 10th point, etc)
+
+### COMBINING / WEIGHTING ###
+
+path to FastChem output =                     ../fastchem/                (only required if mixing ratios obtained from "FastChem")
+final output (mixed table) directory =        ./output/test_case/
+units of final opacity table =                CGS                                          (CGS [used in HELIOS], MKS)
+
+### OPACITY SPECIES ###
+
+species    absorbing  scattering  mixing_ratio  FastChem_symbol  mass_in_AMU      data_path
+
+H2O        yes        yes         0.01            H2O1             18.0153          /mnt/disk2/Research/HELIOS.matej/Opacity3/1H2-16O__POKAZATEL_e2b/
+
+CO2        yes        yes         0.01        C1O2             44.01          /mnt/disk2/Research/HELIOS.matej/Opacity3/12C-16O2__HITEMP2010_e2b/
+
+N2         no         yes         0.98          N2               28.0134          **

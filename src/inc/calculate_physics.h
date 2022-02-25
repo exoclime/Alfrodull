@@ -134,3 +134,24 @@ __global__ void trans_noniso(double*       trans_wg_upper,
                              bool          debug,
                              double        i2s_transition,
                              int           column_idx);
+
+__global__ void calc_contr_func_iso(double* contr_func_band,
+                                    double* trans_wg,
+                                    double* gauss_weight,
+                                    double* planckband_lay,
+                                    double  epsi,
+                                    int     nbin,
+                                    int     ny,
+                                    int     nlayer,
+                                    int     num_cols);
+
+__global__ void calc_contr_func_noniso(double* contr_func_band,
+                                       double* trans_wg_upper,
+                                       double* trans_wg_lower,
+                                       double* gauss_weight,
+                                       double* planckband_lay,
+                                       double  epsi,
+                                       int     nbin,
+                                       int     ny,
+                                       int     nlayer,
+                                       int     num_cols);

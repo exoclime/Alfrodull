@@ -293,9 +293,11 @@ public:
                                     double*     F_up_TOA_spectrum,
                                     double*     zenith_angle,
                                     double*     surface_albedo,
+                                    double*     contr_func_band,
                                     int         num_cols,
                                     int         column_idx,
-                                    bool        surface);
+                                    bool        surface,
+                                    bool        store_contr_func);
 
     bool prepare_compute_flux(double*       dev_starflux,
                               double*       dev_T_lay,
@@ -450,4 +452,18 @@ public:
                                               double* trans_wg_upper,
                                               double* trans_wg_lower,
                                               int     num_cols);
+
+
+    void calculate_contribution_function_iso(double* contr_func_band,
+                                             double* trans_wg,
+                                             double* gauss_weight,
+                                             double* planckband_lay,
+                                             int     num_cols);
+
+    void calculate_contribution_function_noniso(double* contr_func_band,
+                                                double* trans_wg_upper,
+                                                double* trans_wg_lower,
+                                                double* gauss_weight,
+                                                double* planckband_lay,
+                                                int     num_cols);
 };
